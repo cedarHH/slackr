@@ -7,3 +7,126 @@ html, body {
     height: 100%;
     font-family: -apple-system, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
+
+.h1padding{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.banner {
+    height: 7vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Alertpage{
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.Loginpage {
+    display: block;
+}
+
+.Homepage {
+    display: none;
+    height: 93vh;
+}
+
+.alertWindow{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    border: 1px solid #cccccc;
+    border-radius: 10px;
+    transform: translate(-50%, -50%);
+    background-color: #fafafa;
+    padding: 20px;
+    z-index: 2;
+}
+
+.Login{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.Register{
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.ChannelList{
+    flex: 3;
+    background-color: #f4ede4;
+}
+
+.ContentArea{
+    flex: 7;
+    background-color: #fafafa;
+    border-left: 4px solid #ccc;
+}
+
+.roundedInput {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    height:20px;
+    width: 200px;
+    font-size: 1.19em;
+}
+
+.roundedButton{
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    height:20px;
+    width: 240px;
+    text-align: center;
+    line-height: 0%;
+    font-size: 1.2em;    
+}
+
+.footer{
+    height: 5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ChannelContainer {
+    height: 90% ;
+    overflow: hidden;
+    border: 1px solid #ccc;
+}
+
+.ChannelUl {
+    padding: 0;
+    margin: 0;
+}
+
+.channelName {
+    padding: 10px;
+    height: 20%;
+    border-bottom: 1px solid #ddd;
+    transition: transform 0.3s;
+    list-style-type: none;
+}
