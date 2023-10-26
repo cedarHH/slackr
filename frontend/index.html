@@ -1,54 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Slackr</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- You can add your styles and scripts here -->
-  <link rel="stylesheet" type="text/css" media="screen" href="styles/provided.css" />
-  <script type="module" src="src/helpers.js"></script>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Slackr</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- You can add your styles and scripts here -->
+    <link rel="stylesheet" type="text/css" media="screen" href="styles/provided.css" />
+    <script src="src/helpers.js"></script>
 </head>
 
 <body>
-  <!-- This is an example app structure, you can modify this as much as you choose -->
-  <header class="banner">
-    <h1>Slackr</h1>
-  </header>
-  <main role="main">
-    <p>hello</p>
-    <!-- app goes here -->
-        <div class="Login">
-      <form id="loginForm">
-          <label for="email">email:</label>
-          <input type="text" id="email" required>
-          <label for="password">password:</label>
-          <input type="password" id="password" required>
-          <br>
-          <button id="submit">Login</button>
-          <button id="register">Register</button>
-      </form>
-    </div>
+    <header class="banner">
+        <img alt="Slack" src="https://a.slack-edge.com/bv1-10/slack_logo-ebd02d1.svg" height="46" title="Slack">
+    </header>
+    <main role="main">
+        <div class="Loginpage">
+            <h1 class="h1padding">First of all, enter your email address</h1>
 
-    <div class="register">
-      <form id="registerForm">
-          <label for="email">email:</label>
-          <input type="text" id="email" required>
-          <label for="name">name:</label>
-          <input type="text" id="name" required>
-          <label for="password">password:</label>
-          <input type="password" id="password" required>
-          <label for="confirm password">confirm password:</label>
-          <input type="password" id="confirm-password" required>
-          <button id="submit">Register</button>
-      </form>
-    </div>
-  </main>
-  <footer>
-    <p>&copy; Slackr</p>
-  </footer>
-  <script type="module" src="src/main.js"></script>
+            <div class="Login">
+                <p>We suggest using <strong>the email address that you use at work.</strong></p>
+                <form id="loginForm">
+                    <input type="email" id="emailLogin" class="roundedInput" placeholder="name@work-email.com" required>
+                    <br><br>
+                    <input type="password" id="passwordLogin" class="roundedInput" placeholder="password"required>
+                    <br><br>
+                    <button type="submit" id="submitLogin" class="roundedButton">Login</button>
+                    <br>
+                    <p>----------------Or----------------</p>
+                </form>
+                <button id="login2register" class="roundedButton">Register</button>
+            </div>
+            <div class="Register">
+                <p>We suggest using <strong>the email address that you use at work.</strong></p>
+                <form id="registerForm">
+                    <input type="name" id="nameRegister" class="roundedInput" placeholder="name" required>
+                    <br><br>
+                    <input type="email" id="emailRegister" class="roundedInput" placeholder="name@work-email.com" required>
+                    <br><br>
+                    <input type="password" id="passwordRegister" class="roundedInput" placeholder="password"required>
+                    <br><br>
+                    <input type="password" id="confirm_passwordRegister" class="roundedInput" placeholder="confirm password"required>
+                    <br><br>
+                    <button type="submit" id="submitRegister" class="roundedButton">Register</button>
+                    <br>
+                    <p>----------------Or----------------</p>
+                </form>
+                <button id="register2login" type="button" class="roundedButton">Log in</button>
+            </div>
+            <div class="Alertpage">
+                <div class="alertWindow">
+                    <p id="alertText">alert</p>
+                    <button id="alertButton" type="button">close</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="Homepage">
+            <div class="ChannelList">
+                <div class="ChannelContainer" id="channelContainer">
+                    <ul class="channelUl" id="channelUl">
+                        <li class="channelName" id="channelId1">a11111</li>
+                        <li class="channelName" id="channelId2">21111</li>
+                        <li class="channelName" id="channelId3">31111</li>
+                        <li class="channelName" id="channelId4">41111</li>
+                        <li class="channelName" id="channelId5">51111</li>
+                        <li class="channelName" id="channelId6">61111</li>
+                        <li class="channelName" id="channelId7">71111</li>
+                        <li class="channelName" id="channelId8">81111</li>
+                        <li class="channelName" id="channelId9">91111</li>
+                        <li class="channelName" id="channelId11">11111</li>
+                        <li class="channelName" id="channelId12">21111</li>
+                        <li class="channelName" id="channelId13">31111</li>
+                        <li class="channelName" id="channelId14">41111</li>
+                        <li class="channelName" id="channelId15">51111</li>
+                        <li class="channelName" id="channelId16">61111</li>
+                        <li class="channelName" id="channelId17">71111</li>
+                        <li class="channelName" id="channelId18">81111</li>
+                        <li class="channelName" id="channelId19">91111</li>
+                        <li class="channelName" id="channelId21">11111</li>
+                        <li class="channelName" id="channelId22">21111</li>
+                        <li class="channelName" id="channelId23">31111</li>
+                        <li class="channelName" id="channelId24">41111</li>
+                        <li class="channelName" id="channelId25">51111</li>
+                        <li class="channelName" id="channelId26">61111</li>
+                        <li class="channelName" id="channelId27">71111</li>
+                        <li class="channelName" id="channelId28">81111</li>
+                        <li class="channelName" id="channelId29">91111</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="ContentArea">
+
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+        <p>&copy; Slackr</p>
+    </footer>
+    <script src="src/main.js"></script>
 </body>
 
 </html>
