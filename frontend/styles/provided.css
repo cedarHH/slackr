@@ -33,6 +33,17 @@ html, body {
     background-color: rgba(0, 0, 0, 0.7);
 }
 
+.formpage{
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
 .Loginpage {
     display: block;
 }
@@ -42,7 +53,7 @@ html, body {
     height: 93vh;
 }
 
-.alertWindow{
+.popupWindow{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -76,13 +87,14 @@ html, body {
 
 .ChannelList{
     flex: 3;
-    background-color: #f4ede4;
+    background-color: #f2f3f5;
 }
 
 .ContentArea{
     flex: 7;
-    background-color: #fafafa;
+    background-color: #ffffff;
     border-left: 4px solid #ccc;
+    overflow-y: scroll;
 }
 
 .roundedInput {
@@ -95,14 +107,24 @@ html, body {
 }
 
 .roundedButton{
-    border: 1px solid #ccc;
+    border: 1px solid #4752c4;
     border-radius: 10px;
     padding: 20px;
     height:20px;
     width: 240px;
     text-align: center;
     line-height: 0%;
-    font-size: 1.2em;    
+    font-size: 1.2em;
+    background-color: #4752c4;
+    color: #fafafa;    
+}
+
+.roundedSelect{
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    font-size: 1em; 
 }
 
 .footer{
@@ -115,7 +137,7 @@ html, body {
 .ChannelContainer {
     height: 90% ;
     overflow: hidden;
-    border: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
 }
 
 .ChannelUl {
@@ -129,4 +151,34 @@ html, body {
     border-bottom: 1px solid #ddd;
     transition: transform 0.3s;
     list-style-type: none;
+}
+
+.channelHeader {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    height: 20%;
+    border-bottom: 1px solid #ddd;
+    transition: transform 0.3s;
+    list-style-type: none;
+}
+
+.channelHeaderText{
+    font-size: 1.5em;
+}
+
+.symbolButtonAdd {
+    font-size: 2em;
+    font-weight: 700;
+    border: 0;
+
+}
+
+.symbolButtonX {
+    font-size: 2em;
+    font-weight: 700;
+    border: 0;
+    background-color: #fafafa;
+    float: right;
+    line-height: 50%;
 }
