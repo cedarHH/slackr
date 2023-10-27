@@ -30,7 +30,7 @@
                     <br>
                     <p>----------------Or----------------</p>
                 </form>
-                <button id="login2register" class="roundedButton">Register</button>
+                <button id="login2register" type="button" class="roundedButton">Register</button>
             </div>
             <div class="Register">
                 <p>We suggest using <strong>the email address that you use at work.</strong></p>
@@ -50,9 +50,9 @@
                 <button id="register2login" type="button" class="roundedButton">Log in</button>
             </div>
             <div class="Alertpage">
-                <div class="alertWindow">
+                <div class="popupWindow">
                     <p id="alertText">alert</p>
-                    <button id="alertButton" type="button">close</button>
+                    <button id="alertButton" type="button" class="roundedButton">close</button>
                 </div>
             </div>
         </div>
@@ -61,38 +61,41 @@
             <div class="ChannelList">
                 <div class="ChannelContainer" id="channelContainer">
                     <ul class="channelUl" id="channelUl">
-                        <li class="channelName" id="channelId1">a11111</li>
-                        <li class="channelName" id="channelId2">21111</li>
-                        <li class="channelName" id="channelId3">31111</li>
-                        <li class="channelName" id="channelId4">41111</li>
-                        <li class="channelName" id="channelId5">51111</li>
-                        <li class="channelName" id="channelId6">61111</li>
-                        <li class="channelName" id="channelId7">71111</li>
-                        <li class="channelName" id="channelId8">81111</li>
-                        <li class="channelName" id="channelId9">91111</li>
-                        <li class="channelName" id="channelId11">11111</li>
-                        <li class="channelName" id="channelId12">21111</li>
-                        <li class="channelName" id="channelId13">31111</li>
-                        <li class="channelName" id="channelId14">41111</li>
-                        <li class="channelName" id="channelId15">51111</li>
-                        <li class="channelName" id="channelId16">61111</li>
-                        <li class="channelName" id="channelId17">71111</li>
-                        <li class="channelName" id="channelId18">81111</li>
-                        <li class="channelName" id="channelId19">91111</li>
-                        <li class="channelName" id="channelId21">11111</li>
-                        <li class="channelName" id="channelId22">21111</li>
-                        <li class="channelName" id="channelId23">31111</li>
-                        <li class="channelName" id="channelId24">41111</li>
-                        <li class="channelName" id="channelId25">51111</li>
-                        <li class="channelName" id="channelId26">61111</li>
-                        <li class="channelName" id="channelId27">71111</li>
-                        <li class="channelName" id="channelId28">81111</li>
-                        <li class="channelName" id="channelId29">91111</li>
+                        <li class="channelHeader" id="channelHeader">
+                            <span class="channelHeaderText">Channel List</span>
+                            <span><button type="button" id="createChannel" class="symbolButtonAdd">+</button></span>
+                        </li>
+                        <li class="channelName" id="publicChannel">Public:</li>
+                        <li class="channelName" id="privateChannel">Private:</li>
                     </ul>
                 </div>
             </div>
+
             <div class="ContentArea">
 
+            </div>
+
+            <div class="formpage">
+                <div class="popupWindow">
+                    <form id="channelForm">
+                        <label for="channelName"><b>Channel name</b></label>
+                        <button type="button" id="closeCreating" class="symbolButtonX">x</button>
+                        <br><br>
+                        <input type="text" id="creatingChannelName" class="roundedInput" placeholder="channel name" required>
+                        <br><br>
+                        <label for="channelDescription"><b>Channel description</b></label>
+                        <br><br>
+                        <textarea type="text" id="channelDescription" class="roundedInput"></textarea>
+                        <br><br>
+                        <label for="channelType"><b>Channel type&nbsp;&nbsp;&nbsp;</b></label>
+                        <select id="channelType" class="roundedSelect">
+                          <option value="public">Public</option>
+                          <option value="private">Private</option>
+                        </select>
+                        <br><br>
+                        <button type="submit" id="submitCreating" class="roundedButton">Create</button>
+                    </form>
+                </div>
             </div>
         </div>
     </main>
