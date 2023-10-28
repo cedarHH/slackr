@@ -1,11 +1,14 @@
-
-/* base styles, feel free to edit */
 html, body {
     margin: 0;
     padding: 0;
     background-color: #fafafa;
     height: 100%;
     font-family: -apple-system, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+ul{
+    padding-inline-start: 10px;
+    padding-inline-end: 10px;
 }
 
 .h1padding{
@@ -44,7 +47,7 @@ html, body {
     background-color: rgba(0, 0, 0, 0.7);
 }
 
-.Loginpage {
+.Startpage {
     display: block;
 }
 
@@ -86,16 +89,17 @@ html, body {
 }
 
 .ChannelList{
-    flex: 3;
+    width: 30%;
     background-color: #f2f3f5;
 }
 
 .ContentArea{
-    flex: 7;
+    width: 70%;
     background-color: #ffffff;
     border-left: 4px solid #ccc;
     overflow-y: scroll;
 }
+
 
 .roundedInput {
     border: 1px solid #ccc;
@@ -134,10 +138,29 @@ html, body {
     align-items: center;
 }
 
+.channelHeader {
+    height: 6%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5%;
+}
+
 .ChannelContainer {
-    height: 90% ;
-    overflow: hidden;
+    height: 87% ;
+    overflow:hidden;
     border-bottom: 1px solid #ccc;
+}
+
+.ChannelBottomSideBar {
+    display: flex;
+    align-items: center; 
+    height: 6% ;
+    overflow: hidden;
+}
+
+.channelHeaderText{
+    font-size: 1.5em;
 }
 
 .ChannelUl {
@@ -149,22 +172,21 @@ html, body {
     padding: 10px;
     height: 20%;
     border-bottom: 1px solid #ddd;
+    border-radius: 11px;
     transition: transform 0.3s;
     list-style-type: none;
+    background-color: #f2f3f5;
 }
 
-.channelHeader {
-    display: flex;
-    justify-content: space-between;
+.channelDescription {
     padding: 10px;
     height: 20%;
     border-bottom: 1px solid #ddd;
+    border-radius: 11px;
     transition: transform 0.3s;
     list-style-type: none;
-}
-
-.channelHeaderText{
-    font-size: 1.5em;
+    background-color: #ffffff;
+    overflow-wrap: break-word;
 }
 
 .symbolButtonAdd {
@@ -179,6 +201,12 @@ html, body {
     font-weight: 700;
     border: 0;
     background-color: #fafafa;
+    float: right;
+    line-height: 50%;
+}
+
+.imgButtonX {
+    border: 0;
     float: right;
     line-height: 50%;
 }
