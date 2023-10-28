@@ -6,17 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Slackr</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- You can add your styles and scripts here -->
     <link rel="stylesheet" type="text/css" media="screen" href="styles/provided.css" />
     <script src="src/helpers.js"></script>
 </head>
 
 <body>
     <header class="banner">
-        <img alt="Slack" src="https://a.slack-edge.com/bv1-10/slack_logo-ebd02d1.svg" height="46" title="Slack">
+        <img alt="Slack" src="./img/slack_logo.svg" height="46" title="Slack">
     </header>
     <main role="main">
-        <div class="Loginpage">
+        <div class="Startpage">
             <h1 class="h1padding">First of all, enter your email address</h1>
 
             <div class="Login">
@@ -59,15 +58,20 @@
 
         <div class="Homepage">
             <div class="ChannelList">
+                <div class="channelHeader" id="channelHeader">
+                    <span class="channelHeaderText">Channel List</span>
+                    <span><button type="button" id="createChannel" class="symbolButtonAdd">+</button></span>
+                </div>
                 <div class="ChannelContainer" id="channelContainer">
                     <ul class="channelUl" id="channelUl">
-                        <li class="channelHeader" id="channelHeader">
-                            <span class="channelHeaderText">Channel List</span>
-                            <span><button type="button" id="createChannel" class="symbolButtonAdd">+</button></span>
-                        </li>
-                        <li class="channelName" id="publicChannel">Public:</li>
-                        <li class="channelName" id="privateChannel">Private:</li>
+                        <li class="channelName" id="publicChannel"><b>Public:</b></li>
+                        <li class="channelName" id="privateChannel"><b>Private:</b></li>
                     </ul>
+                </div>
+                <div class="ChannelBottomSideBar">
+                    <button type="button" id = "logOutButton" class="imgButtonX">
+                        <img alt="Log out" src="./img/logout.png" width="35px">
+                    </button>
                 </div>
             </div>
 
@@ -102,7 +106,7 @@
     <footer class="footer">
         <p>&copy; Slackr</p>
     </footer>
-    <script src="src/main.js"></script>
+    <script src="./src/main.js"></script>
 </body>
 
 </html>
