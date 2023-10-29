@@ -1,3 +1,7 @@
+import { BACKEND_PORT } from './config.js';
+import { fileToDataUrl } from './helpers.js';
+
+
 console.log('Let\'s go!');
 
 let scrollPosition = 0;
@@ -70,6 +74,7 @@ function register(event){
 }
 
 function successfulLogin(){
+    document.querySelector(".editProfilePage").style.display="none";
     document.querySelector(".Startpage").style.display="none";
     document.querySelector(".footer").style.display="none";
     document.querySelector(".Homepage").style.display="flex";
@@ -127,7 +132,10 @@ function getChannelList(){
             item.className='channelName';
             item.textContent=element.name;
             item.addEventListener("click",()=>{
-                displayChannelDescription(item)
+                displayChannelDescription(item);
+                if(element.members.includes(parseInt(localStorage.getItem("userId")))){
+                    displayMessageList(element.id);
+                }
             });
         });
         document.getElementById('channelContainer').addEventListener('wheel', (event)=>infiniteScroll(event,"channelContainer","channelUl")); 
@@ -162,6 +170,9 @@ function displayChannelDescription(channel){
             let editButton = document.createElement("button");
             let br1 = document.createElement("br");
             let br2 = document.createElement("br");
+            let inviteButton = document.createElement("button")
+            let br3 = document.createElement("br");
+            let br4 = document.createElement("br");
             let leaveButton = document.createElement("button");
 
             channelName.textContent = data.name;
@@ -184,6 +195,11 @@ function displayChannelDescription(channel){
             editButton.className="roundedButton";
             editButton.textContent="Edit";
             editButton.style.width="98%";
+            editButton.type="button";
+            inviteButton.id=`${channel.id}Invite`;
+            inviteButton.className="roundedButton";
+            inviteButton.textContent="Invite";
+            inviteButton.style.width="98%";
             leaveButton.type = "button";
             leaveButton.id=`${channel.id}Leave`;
             leaveButton.className = "roundedButton";
@@ -201,11 +217,14 @@ function displayChannelDescription(channel){
             item.appendChild(editButton);
             item.appendChild(br1);
             item.appendChild(br2);
+            item.appendChild(inviteButton);
+            item.appendChild(br3);
+            item.appendChild(br4);
             item.appendChild(leaveButton);
             document.getElementById("channelUl").insertBefore(item,channel.nextSibling);
 
             editButton.addEventListener("click",()=>displayEditPage(channel.id,data.name,data.description));
-
+            inviteButton.addEventListener("click",()=>displayInvitePage(channel.id,data.name));
             leaveButton.addEventListener("click",()=>{
                 apiCallPost(`channel/${channel.id}/leave`,{},localStorage.getItem("token"))
                     .then(()=>{
@@ -246,6 +265,71 @@ function displayChannelDescription(channel){
         });
 }
 
+function displayMessageList(channelId){
+    document.querySelector(".messageUl").style.display = "none";
+    document.querySelector(".defaultPage").style.display = "flex";
+    document.getElementById("sendMessage").addEventListener("click",()=>sendMessage(channelId));
+
+    let messageList = document.getElementById("messageUl");
+    while(messageList.firstChild){
+        messageList.removeChild(messageList.firstChild);
+    }
+    let messageIndex = 0;
+    apiCallGet(`message/${channelId}`,localStorage.getItem("token"),`start=${messageIndex}`)
+        .then((data)=>{
+            data.messages.forEach(element=>{
+                apiCallGet(`user/${element.sender}`,localStorage.getItem("token"),"")
+                    .then((senderData)=>{
+                        let item = document.createElement("li");
+                        item.className = "messageInstance";
+                        item.id = `${element.id}m`;
+        
+                        let messageHeader = document.createElement("div");
+                        messageHeader.className = "messageHeader";
+                        let avatar = document.createElement("img");
+                        avatar.setAttribute("alt", "avatar");
+                        avatar.setAttribute("id", `${element.sender}s`);
+                        avatar.setAttribute("src", "./img/avatar.png");
+                        if(senderData.image) avatar.setAttribute("src",senderData.image);
+                        avatar.setAttribute("width", "35px");
+                        avatar.setAttribute("height", "35px");
+                        let headerName = document.createElement("p");
+                        headerName.innerText = senderData.name;
+                        let headerTime = document.createElement("p");
+                        let sentTime = new Date(element.sentAt);
+                        headerTime.innerText = `${sentTime.toLocaleDateString()} ${sentTime.toLocaleTimeString()}`;
+                        messageHeader.appendChild(avatar);
+                        messageHeader.appendChild(headerName);
+                        messageHeader.appendChild(headerTime);
+                  
+                        let messageContent = document.createElement("div");
+                        messageContent.className = "messageContent";
+                        messageContent.id = `${element.id}message`;
+                        let contentText = document.createElement("p");
+                        contentText.innerText = element.message;
+                        messageContent.appendChild(contentText);
+                    
+                        item.appendChild(messageHeader);
+                        item.appendChild(messageContent);
+                        messageList.insertBefore(item,messageList.firstChild);
+                        avatar.addEventListener("click",()=>displayProfile(element.sender));
+                        ++messageIndex;
+                        document.getElementById("messageArea").scrollTop = document.getElementById("messageUl").scrollHeight;
+                        if(messageList.firstChild){
+                            document.querySelector(".defaultPage").style.display = "none";
+                            document.querySelector(".messageUl").style.display = "block";
+                        }
+                    })
+                    .catch((error)=>{
+                        return;
+                    })
+            })
+        })
+        .catch((error)=>{
+            return 0;
+        })
+}
+
 function displayCreatePage(){
     document.querySelector(".createChannelPage").style.display="block";
     document.getElementById("closeCreating").addEventListener('click',()=>{
@@ -255,12 +339,12 @@ function displayCreatePage(){
     document.getElementById("channelForm").addEventListener('submit',(event)=>{
         event.preventDefault();
         let name = document.getElementById("creatingChannelName").value;
-        let private = true;
+        let isPivate = true;
         let description = document.getElementById("channelDescription").value;
         let token = localStorage.getItem("token");
         if(!description) description = "No description";
-        if(document.getElementById("channelType").value==="public") private=false;
-        apiCallPost("channel",{name,private,description},token)
+        if(document.getElementById("channelType").value==="public") isPivate=false;
+        apiCallPost("channel",{name,isPivate,description},token)
             .then((data)=>{
                 getChannelList();
             })
@@ -298,12 +382,38 @@ function displayEditPage(channelId,name,description){
                 setAlertPage(error);
             }
         );
-
         document.querySelector(".editChannelPage").style.display="none";
         document.getElementById("editChannelForm").reset();
     })
 
 }
+
+function displayInvitePage(channelId,name){
+        document.querySelector(".inviteChannelPage").style.display="block";
+        document.getElementById("inviteChannelName").value = name;
+        apiCallGet(`user`,localStorage.getItem("token"),"")
+            .then((data)=>{
+                const userList = document.getElementById("UserList");
+                data.users.forEach(item => {
+                    apiCallGet(`user`,localStorage.getItem("token"),`${data.id}`)
+                    .then((data)=>{
+                        const li = document.createElement("li");
+                        const checkbox = document.createElement("input");
+                        checkbox.type = "checkbox";
+                        checkbox.id = item.id;
+                        const label = document.createElement("label");
+                        label.textContent = data.name; 
+                        li.appendChild(checkbox);
+                        li.appendChild(label);
+                        userList.appendChild(li);
+                    })
+                    
+                });
+            })
+            document.getElementById("closeInviting").addEventListener('click',()=>{
+            document.querySelector(".inviteChannelPage").style.display="none";
+        });
+    }
 
 function getBottomSidebar(){
     apiCallGet(`user/${localStorage.getItem("userId")}`,localStorage.getItem("token"),"")
@@ -312,10 +422,27 @@ function getBottomSidebar(){
                 document.getElementById("userAvatar").src = data.image;
             }
             document.getElementById("userName").textContent = data.name;
+            document.getElementById("userAvatar").addEventListener("click",()=>{
+                displayProfile(localStorage.getItem("userId"))
+            });
         })
         .catch((error)=>{
             return;
         });
+}
+
+function sendMessage(channelId){
+    let image = "";
+    let message = document.getElementById("inputMessage").value;
+    if(!message || !message.trim()) return;
+    document.getElementById("inputMessage").value = "";
+    apiCallPost(`message/${channelId}`,{message,image},localStorage.getItem("token"))
+        .then(()=>{
+            displayMessageList(channelId);
+        })
+        .catch(()=>{
+            return;
+        })
 }
 
 function infiniteScroll(event,containerId,listId){
@@ -343,6 +470,88 @@ function logOut(){
     document.querySelector("body").style.backgroundColor="#fafafa";
 }
 
+function displayProfile(userId){
+    document.querySelector(".profilePage").style.display="block";
+    document.getElementById("closeProfile").addEventListener("click",()=>{
+        document.querySelector(".profilePage").style.display="none";
+    })
+    if(userId === localStorage.getItem("userId")){
+        document.getElementById("editProfile").style.display = "block";
+        document.getElementById("editProfile").addEventListener("click",()=>displayEditProfile());
+    }
+    else{
+        document.getElementById("editProfile").style.display = "none";
+    }
+    apiCallGet(`user/${userId}`,localStorage.getItem("token"),"")
+        .then((data)=>{
+            if(data.bio){
+                document.getElementById("profileBio").textContent=data.bio;
+            }
+            document.getElementById("profileEmail").textContent=data.email;
+            document.getElementById("profileName").textContent=data.name;
+            document.getElementById("profileImg").src="./img/avatar.png"
+            if(data.image) document.getElementById("profileImg").src=data.image;    
+        })
+        .catch((error)=>{
+            setAlertPage(error);
+        }
+    );
+}
+
+function displayEditProfile(){
+    document.querySelector(".profilePage").style.display="none";
+    document.querySelector(".editProfilePage").style.display="block";
+    apiCallGet(`user/${localStorage.getItem("userId")}`,localStorage.getItem("token"),"")
+        .then((data)=>{
+            document.getElementById("bioProfile").value = "No biography"
+            if(data.bio){
+                document.getElementById("bioProfile").value=data.bio;
+            }
+            document.getElementById("emailProfile").value=data.email;
+            document.getElementById("nameProfile").value=data.name;
+            document.getElementById("editProfileImg").src="./img/avatar.png"
+            if(data.image) document.getElementById("editProfileImg").src=data.image;    
+        })
+        .catch((error)=>{
+            setAlertPage(error);
+        }
+    );
+    document.getElementById("profileForm").addEventListener("submit",(event)=>submitEditingProfile(event))
+    document.getElementById("closeEditProfile").addEventListener("click",()=>{
+        document.getElementById("profileForm").reset();
+        document.querySelector(".editProfilePage").style.display="none";
+    })
+}
+
+function submitEditingProfile(event){
+    event.preventDefault();
+    let name = document.getElementById('nameProfile').value;
+    let email = document.getElementById('emailProfile').value;
+    let password = document.getElementById('passwordProfile').value;
+    let bio = document.getElementById('bioProfile').value;
+    let fileInput = document.getElementById("uploadAvatar");
+    fileToDataUrl(fileInput.files[0])
+        .then(image => {
+        let body={name,email,password,bio,image};
+        apiCallPut('user',body,localStorage.getItem("token"))
+            .then((data)=>{
+                localStorage.setItem("email",email);
+                localStorage.setItem("password",password);
+                document.getElementById("profileForm").reset();
+                autoLogin();
+            })
+            .catch((error)=>{
+                if(error==="Email address already taken")
+                {
+                    localStorage.setItem("email",email);
+                    localStorage.setItem("password",password);
+                }
+                document.getElementById("profileForm").reset();
+                autoLogin();
+            }
+        );
+    });   
+}
 
 function apiCallPost(path, body, token){
     let headers = {'accept': 'application/json','Content-type': 'application/json',};
