@@ -88,7 +88,8 @@
                 </div>
                 <div class = "ContentBottomSideBar">
                     <div class = "roundedBottomInput">
-                        <span>🏞️</span>
+                        <label for="imgUpload">🏞️</label>
+                        <input type="file" id="imgUpload" class="hiddenInput" multiple="false" accept=".png, .jpg, .jpeg">
                         <input id = "inputMessage" class = "inputMessage" placeholder="message">
                         <div id = "sendMessage">➡️</div>
                     </div>
@@ -98,7 +99,7 @@
             <div class="createChannelPage">
                 <div class="popupWindow">
                     <form id="channelForm">
-                        <label for="channelName"><b>Channel name</b></label>
+                        <label><b>Channel name</b></label>
                         <button type="button" id="closeCreating" class="symbolButtonX">x</button>
                         <br><br>
                         <input type="text" id="creatingChannelName" class="roundedInput" placeholder="channel name" required>
@@ -121,7 +122,7 @@
             <div class="editChannelPage">
                 <div class="popupWindow">
                     <form id="editChannelForm">
-                        <label for="channelName"><b>Channel name</b></label>
+                        <label><b>Channel name</b></label>
                         <button type="button" id="closeEditing" class="symbolButtonX">x</button>
                         <br><br>
                         <input type="text" id="editingChannelName" class="roundedInput" placeholder="channel name" required>
@@ -182,6 +183,24 @@
                     </form>
                     <br>
                     <button type="button" id="closeEditProfile" class="roundedButton">Close</button>
+                </div>
+            </div>
+
+            <div class="loadingPage">
+                <div id = "loadWin" class="popupWindow">
+                    <p id="loadText">Loading...</p>
+                </div>
+            </div>
+
+            <div class="imgPage">
+                <div id = "imgWin" class="popupWindow">
+                    <img alt="big image" id = "bigImg" src="">
+                    <br>
+                    <div class = "arrowArea">
+                        <div id = "leftImg">⬅️</div>
+                        <button type = "button" class = "roundedButton" id = "closeImg">Close</button>
+                        <div id = "rightImg">➡️</div>
+                    </div>
                 </div>
             </div>
 
