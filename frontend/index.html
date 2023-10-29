@@ -58,12 +58,12 @@
 
         <div class="Homepage">
             <div class="ChannelList">
-                <div class="channelHeader" id="channelHeader">
+                <div class="ChannelHeader" id="channelHeader">
                     <span class="channelHeaderText">Channel List</span>
                     <span><button type="button" id="createChannel" class="symbolButtonAdd">+</button></span>
                 </div>
                 <div class="ChannelContainer" id="channelContainer">
-                    <ul class="channelUl" id="channelUl">
+                    <ul class="ChannelUl" id="channelUl">
                         <li class="channelName" id="publicChannel"><b>Public:</b></li>
                         <li class="channelName" id="privateChannel"><b>Private:</b></li>
                     </ul>
@@ -78,7 +78,21 @@
             </div>
 
             <div class="ContentArea">
-
+                <div id ="messageArea" class = "MessageArea">
+                    <div class="defaultPage">
+                        <img alt="Taffy" src="./img/tafei.png" width="100px">
+                        <p>No one's around to play with Taffy.</p>
+                    </div>
+                    <ul class="messageUl" id="messageUl">
+                    </ul>
+                </div>
+                <div class = "ContentBottomSideBar">
+                    <div class = "roundedBottomInput">
+                        <span>🏞️</span>
+                        <input id = "inputMessage" class = "inputMessage" placeholder="message">
+                        <div id = "sendMessage">➡️</div>
+                    </div>
+                </div>
             </div>
 
             <div class="createChannelPage">
@@ -121,13 +135,27 @@
                 </div>
             </div>
 
+            <div class="inviteChannelPage">
+                <div class="popupWindow">
+                    <label for="channelName"><b>Channel name</b></label>
+                    <ul id="UserList"></ul>
+                    <button type="button" id="invite" class="roundedButton">Invite</button>
+                    <br><br>
+                    <button type="button" id="closeInviting" class="roundedButton">Close</button>
+                    <br><br>
+                </div>
+            </div>
+
             <div class="profilePage">
                 <div class="popupWindow">
                     <img alt="profileImg" id = "profileImg" src="./img/avatar.png" width="100px">
-                    <h2>Name</h2>
-                    <p id="profileName" class="pmarginY">name@email.com</p>
+                    <h2 id="profileName">Name</h2>
+                    <p id="profileEmail" class="pmarginY">name@email.com</p>
                     <p class="pmarginY"><b>bio</b></p>
-                    <p id="profileBio" class="pmarginY">biobiobiobio</p>
+                    <p id="profileBio" class="pmarginY">No biography</p>
+                    <button type="button" id="editProfile" class="roundedButton">Edit</button>
+                    <br>
+                    <button type="button" id="closeProfile" class="roundedButton">Close</button>
                 </div>
             </div>
 
@@ -135,7 +163,9 @@
                 <div class="popupWindow">
                     <img alt="profileImg" id = "editProfileImg" src="./img/avatar.png" width="100px">
                     <br>
-                    <button type="button" id="uploadAvatar" class="roundedButton">Upload</button>
+                    <label for="uploadAvatar">upload image</label>
+                    <br>
+                    <input type="file" id="uploadAvatar" class="roundedInput" accept="image/*">
                     <br>
                     <form id="profileForm">
                         <input type="name" id="nameProfile" class="roundedInput" placeholder="name" required>
@@ -146,10 +176,12 @@
                         <br><br>
                         <input type="password" id="confirm_passwordProfile" class="roundedInput" placeholder="confirm password"required>
                         <br><br>
-                        <input type="text" id="bioProfile" class="roundedInput" placeholder="bio"required>
+                        <input type="text" id="bioProfile" class="roundedInput" placeholder="No biography">
                         <br><br>
                         <button type="submit" id="submitProfile" class="roundedButton">Submit</button>
                     </form>
+                    <br>
+                    <button type="button" id="closeEditProfile" class="roundedButton">Close</button>
                 </div>
             </div>
 
@@ -158,7 +190,7 @@
     <footer class="footer">
         <p>&copy; Slackr</p>
     </footer>
-    <script src="./src/main.js"></script>
+    <script type="module" src="src/main.js"></script>
 </body>
 
 </html>
