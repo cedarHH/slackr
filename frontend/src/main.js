@@ -22,7 +22,8 @@ function startPage(){
 
 function homePage(){
     getChannelList();
-    document.getElementById("createChannel").addEventListener('click',()=>displayFormPage());
+    getBottomSidebar();
+    document.getElementById("createChannel").addEventListener('click',()=>displayCreatePage());
     document.getElementById("logOutButton").addEventListener('click',()=>logOut());
 }
 
@@ -125,7 +126,9 @@ function getChannelList(){
             }
             item.className='channelName';
             item.textContent=element.name;
-            item.addEventListener("click",()=>displayChannelDescription(item));
+            item.addEventListener("click",()=>{
+                displayChannelDescription(item)
+            });
         });
         document.getElementById('channelContainer').addEventListener('wheel', (event)=>infiniteScroll(event,"channelContainer","channelUl")); 
     })
@@ -156,22 +159,36 @@ function displayChannelDescription(channel){
             let creationTimeValue = document.createElement("p");
             let channelDescription = document.createElement("h5");
             let descriptionContent = document.createElement("p");
+            let editButton = document.createElement("button");
+            let br1 = document.createElement("br");
+            let br2 = document.createElement("br");
             let leaveButton = document.createElement("button");
 
             channelName.textContent = data.name;
-            channelType.textContent = "private channel";
+            channelName.id = `${channel.id}Name`;
+            channelName.style.marginBlockEnd = "0.7em";
+            channelType.textContent = "🔒 private";
+            channelType.style.marginBlockStart = "0em";
+            channelType.style.marginBlockEnd = "0.5em";
             if(data.private === false){
-                channelType.textContent = "public channel";
+                channelType.textContent = "🔓 public";
             }
             creationTime.textContent = "Channel Creation Time";
             let curDate = new Date(data.createdAt);
             creationTimeValue.textContent = `${curDate.toLocaleDateString()} ${curDate.toLocaleTimeString()}`;
             channelDescription.textContent = "Description";
             descriptionContent.textContent = data.description;
+            descriptionContent.id = `${channel.id}DescriptionContent`;
+            editButton.type="button";
+            editButton.id=`${channel.id}Edit`;
+            editButton.className="roundedButton";
+            editButton.textContent="Edit";
+            editButton.style.width="98%";
             leaveButton.type = "button";
             leaveButton.id=`${channel.id}Leave`;
             leaveButton.className = "roundedButton";
             leaveButton.textContent = "Leave";
+            leaveButton.style.width="98%";
 
             item.appendChild(channelName);
             item.appendChild(channelType);
@@ -181,8 +198,14 @@ function displayChannelDescription(channel){
             item.appendChild(hr2);
             item.appendChild(channelDescription);
             item.appendChild(descriptionContent);
+            item.appendChild(editButton);
+            item.appendChild(br1);
+            item.appendChild(br2);
             item.appendChild(leaveButton);
             document.getElementById("channelUl").insertBefore(item,channel.nextSibling);
+
+            editButton.addEventListener("click",()=>displayEditPage(channel.id,data.name,data.description));
+
             leaveButton.addEventListener("click",()=>{
                 apiCallPost(`channel/${channel.id}/leave`,{},localStorage.getItem("token"))
                     .then(()=>{
@@ -206,6 +229,7 @@ function displayChannelDescription(channel){
             joinButton.id=`${channel.id}Join`;
             joinButton.className = "roundedButton";
             joinButton.textContent = "Join";
+            joinButton.style.width = "98%";
             item.appendChild(joinButton);
             document.getElementById("channelUl").insertBefore(item,channel.nextSibling);
             joinButton.addEventListener("click",()=>{
@@ -213,6 +237,7 @@ function displayChannelDescription(channel){
                     .then(()=>{
                         channel.style.backgroundColor="#f2f3f5";
                         document.getElementById("channelUl").removeChild(item);
+                        displayChannelDescription(channel);
                     })
                     .catch((event)=>{
                         return;
@@ -221,10 +246,10 @@ function displayChannelDescription(channel){
         });
 }
 
-function displayFormPage(){
-    document.querySelector(".formpage").style.display="block";
+function displayCreatePage(){
+    document.querySelector(".createChannelPage").style.display="block";
     document.getElementById("closeCreating").addEventListener('click',()=>{
-        document.querySelector(".formpage").style.display="none";
+        document.querySelector(".createChannelPage").style.display="none";
         document.getElementById("channelForm").reset();
     });
     document.getElementById("channelForm").addEventListener('submit',(event)=>{
@@ -243,9 +268,54 @@ function displayFormPage(){
                 setAlertPage(error);
             }
         )
-        document.querySelector(".formpage").style.display="none";
+        document.querySelector(".createChannelPage").style.display="none";
         document.getElementById("channelForm").reset();
     })
+}
+
+function displayEditPage(channelId,name,description){
+    document.querySelector(".editChannelPage").style.display="block";
+    document.getElementById("closeEditing").addEventListener('click',()=>{
+        document.querySelector(".editChannelPage").style.display="none";
+        document.getElementById("editChannelForm").reset();
+    });
+    document.getElementById("editingChannelName").value = name;
+    document.getElementById("editChannelDescription").value = description;
+    document.getElementById("editChannelForm").addEventListener('submit',(event)=>{
+        event.preventDefault();
+        let name = document.getElementById("editingChannelName").value;
+        let description = document.getElementById("editChannelDescription").value;
+        let token = localStorage.getItem("token");
+        if(!description) description = "No description";
+
+        apiCallPut(`channel/${channelId}`,{name,description},token)
+            .then((data)=>{
+                document.getElementById(channelId).textContent = name;
+                document.getElementById(`${channelId}Name`).textContent = name;
+                document.getElementById(`${channelId}DescriptionContent`).textContent = description;
+            })
+            .catch((error)=>{
+                setAlertPage(error);
+            }
+        );
+
+        document.querySelector(".editChannelPage").style.display="none";
+        document.getElementById("editChannelForm").reset();
+    })
+
+}
+
+function getBottomSidebar(){
+    apiCallGet(`user/${localStorage.getItem("userId")}`,localStorage.getItem("token"),"")
+        .then((data)=>{
+            if(data.image){
+                document.getElementById("userAvatar").src = data.image;
+            }
+            document.getElementById("userName").textContent = data.name;
+        })
+        .catch((error)=>{
+            return;
+        });
 }
 
 function infiniteScroll(event,containerId,listId){
@@ -275,9 +345,9 @@ function logOut(){
 
 
 function apiCallPost(path, body, token){
-    let headers = {'Content-type': 'application/json',};
+    let headers = {'accept': 'application/json','Content-type': 'application/json',};
     if(token){
-        headers = {'Content-type': 'application/json','Authorization': `Bearer ${token}`};
+        headers = {'accept': 'application/json','Content-type': 'application/json','Authorization': `Bearer ${token}`};
     }
     return new Promise((resolve,reject) =>{
         fetch(`http://localhost:5005/` + path, {
@@ -305,9 +375,35 @@ function apiCallGet(path, token, queryString){
         fetch(`http://localhost:5005/` + path + queryString, {
             method: 'GET',
             headers: {
+                'accept': 'application/json',
                 'Content-type': 'application/json',
                 'Authorization': `Bearer ${token}`
             }
+        })
+        .then((response) => response.json())
+        .then((data) => {
+        if (data.error) {
+          reject(data.error);
+        } else {
+          resolve(data);
+        }
+        })
+        .catch((error) => {
+            reject(error);
+        });
+    });
+};
+
+function apiCallPut(path, body, token){
+    let headers = {'accept': 'application/json','Content-type': 'application/json',};
+    if(token){
+        headers = {'accept': 'application/json','Content-type': 'application/json','Authorization': `Bearer ${token}`};
+    }
+    return new Promise((resolve,reject) =>{
+        fetch(`http://localhost:5005/` + path, {
+            method: 'PUT',
+            headers: headers,
+            body: JSON.stringify(body)
         })
         .then((response) => response.json())
         .then((data) => {
