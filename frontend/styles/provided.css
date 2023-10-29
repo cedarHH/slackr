@@ -63,6 +63,17 @@ ul{
     background-color: rgba(0, 0, 0, 0.7);
 }
 
+.inviteChannelPage{
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
 .profilePage{
     display: none;
 }
@@ -122,15 +133,17 @@ ul{
 .ChannelList{
     width: 30%;
     max-width: 275px;
+
     background-color: #f2f3f5;
 }
 
 .ContentArea{
+    display: flex;
+    flex-direction: column;
     flex-grow: 1;
     min-width: 70%;
     background-color: #ffffff;
     border-left: 4px solid #ccc;
-    overflow-y: scroll;
 }
 
 
@@ -171,7 +184,7 @@ ul{
     align-items: center;
 }
 
-.channelHeader {
+.ChannelHeader {
     height: 6%;
     display: flex;
     justify-content: space-between;
@@ -190,6 +203,7 @@ ul{
     justify-content: space-between;
     align-items: center; 
     height: 6% ;
+    min-height: 50px;
     padding: 0 5%;
     overflow: hidden;
 }
@@ -202,9 +216,61 @@ ul{
     font-size: 1.2em;
 }
 
+.MessageArea{
+    flex: 1;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.messageUl {
+    margin: 16px;
+    display: none;
+}
+
+.messageInstance{
+    list-style-type: none;
+}
+
+.messageHeader{
+    display: flex;
+    justify-content:space-between;
+    width:300px;
+    align-items: center;
+    padding: 0 10px;
+    height: 60px;
+}
+
+.messageContent {
+    padding: 10px;
+    max-width: 90%;
+    display: inline-block;
+    border-bottom: 1px solid #ddd;
+    border-radius: 11px;
+    background-color: #f2f3f5;
+    word-wrap: break-word;
+}
+
+.defaultPage{
+    display: flex;
+    height: 80%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.channelDescription {
+    padding: 10px;
+    height: 20%;
+    border-bottom: 1px solid #ddd;
+    border-radius: 11px;
+    transition: transform 0.3s;
+    list-style-type: none;
+    background-color: #ffffff;
+    overflow-wrap: break-word;
+}
+
 .ChannelUl {
-    padding: 0;
-    margin: 0;
+    margin: 16px;
 }
 
 .channelName {
@@ -217,15 +283,34 @@ ul{
     background-color: #f2f3f5;
 }
 
-.channelDescription {
-    padding: 10px;
-    height: 20%;
-    border-bottom: 1px solid #ddd;
-    border-radius: 11px;
-    transition: transform 0.3s;
-    list-style-type: none;
-    background-color: #ffffff;
-    overflow-wrap: break-word;
+.ContentBottomSideBar{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+    overflow: hidden;
+}
+
+.roundedBottomInput{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 0 2%;
+    width:91%;
+    height: 80%;
+    font-size: 1.5em;
+    background-color: #ebedef;
+}
+
+.inputMessage{
+    width: 80%;
+    height: 100%;
+    border: none;
+    outline: none;
+    background-color: #ebedef;
 }
 
 .symbolButtonAdd {
