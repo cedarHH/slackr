@@ -227,6 +227,10 @@ ul{
     display: none;
 }
 
+.noul{
+    list-style-type: none;
+}
+
 .messageInstance{
     list-style-type: none;
 }
