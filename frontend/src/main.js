@@ -4,7 +4,9 @@ import { fileToDataUrl } from './helpers.js';
 
 console.log('Let\'s go!');
 
+let messageIndex = 0;
 let scrollPosition = 0;
+let currentChannel = 0;
 
 startPage();
 autoLogin();
@@ -134,7 +136,21 @@ function getChannelList(){
             item.addEventListener("click",()=>{
                 displayChannelDescription(item);
                 if(element.members.includes(parseInt(localStorage.getItem("userId")))){
+                    messageIndex = 0;
+                    document.querySelector(".loadingPage").style.display = "block";
+                    document.getElementById("loadWin").style.backgroundColor = "#4752c4";
+                    document.getElementById("loadWin").style.color = "#fafafa";
+                    document.getElementById("loadWin").style.fontSize = "2em";
                     displayMessageList(element.id);
+                    document.getElementById("messageArea").addEventListener("scroll" ,(event)=>{
+                        if(document.getElementById("messageArea").scrollTop===0){
+                            displayMessageList(element.id);
+                            document.querySelector(".loadingPage").style.display = "block";
+                            document.getElementById("loadWin").style.backgroundColor = "#4752c4";
+                            document.getElementById("loadWin").style.color = "#fafafa";
+                            document.getElementById("loadWin").style.fontSize = "2em";
+                        }
+                    })
                 }
             });
         });
@@ -149,9 +165,11 @@ function displayChannelDescription(channel){
     if(channel.nextSibling && channel.nextSibling.id === `${channel.id}Description`){
         channel.style.backgroundColor="#f2f3f5";
         document.getElementById("channelUl").removeChild(channel.nextSibling);
+        currentChannel = channel.id;
         return;
     }
     channel.style.backgroundColor="#e0e1e5";
+    currentChannel = channel.id;
 
     apiCallGet(`channel/${channel.id}`,localStorage.getItem("token"),'')
         .then((data)=>{
@@ -240,6 +258,7 @@ function displayChannelDescription(channel){
             });
         })
         .catch((error)=>{
+            document.querySelector(".loadingPage").style.display = "none";
             let item = document.createElement('li');
             item.className='channelDescription';
             item.id = `${channel.id}Description`;
@@ -266,15 +285,12 @@ function displayChannelDescription(channel){
 }
 
 function displayMessageList(channelId){
-    document.querySelector(".messageUl").style.display = "none";
-    document.querySelector(".defaultPage").style.display = "flex";
     document.getElementById("sendMessage").addEventListener("click",()=>sendMessage(channelId));
-
+    let flag = messageIndex;
     let messageList = document.getElementById("messageUl");
-    while(messageList.firstChild){
+    while(messageList.firstChild&&!messageIndex){
         messageList.removeChild(messageList.firstChild);
     }
-    let messageIndex = 0;
     apiCallGet(`message/${channelId}`,localStorage.getItem("token"),`start=${messageIndex}`)
         .then((data)=>{
             let promises = [];
@@ -283,7 +299,7 @@ function displayMessageList(channelId){
                 let get = apiCallGet(`user/${element.sender}`,localStorage.getItem("token"),"");
                 promises.push(get);
                 get.then((senderData)=>{
-                    messageDetailList.push([element.id,senderData,element])
+                    messageDetailList.push([element.id,senderData,element,channelId])
                 })
                 .catch((error)=>{
                     return;
@@ -291,7 +307,11 @@ function displayMessageList(channelId){
             })
             Promise.all(promises)
                 .then(()=>{
+                    document.querySelector(".loadingPage").style.display = "none";
                     messageDetailList.sort((a,b)=>b[0]-a[0]);
+                    if(messageDetailList.length&&(messageDetailList[0][3]!==parseInt(currentChannel))){
+                        return;
+                    }
                     messageDetailList.forEach((messageItem)=>{
                         let item = document.createElement("li");
                         item.className = "messageInstance";
@@ -318,21 +338,101 @@ function displayMessageList(channelId){
                         let messageContent = document.createElement("div");
                         messageContent.className = "messageContent";
                         messageContent.id = `${messageItem[2].id}message`;
-                        let contentText = document.createElement("p");
-                        contentText.innerText = messageItem[2].message;
-                        messageContent.appendChild(contentText);
-                    
+                        if(messageItem[2].image){
+                            let contentImg = document.createElement("img");
+                            contentImg.setAttribute("alt","Image message");
+                            contentImg.setAttribute("id", `${messageItem[2].id}img`);
+                            contentImg.setAttribute("src",messageItem[2].image);
+                            contentImg.setAttribute("width", "100px");
+                            contentImg.setAttribute("height", "100px");
+                            messageContent.appendChild(contentImg);
+                            contentImg.addEventListener("click",()=>{
+                                document.querySelector(".imgPage").style.display = "block";
+                                document.getElementById("bigImg").setAttribute("src",messageItem[2].image);
+                                document.getElementById("closeImg").addEventListener("click",()=>{
+                                    document.querySelector(".imgPage").style.display = "none";
+                                })
+                                document.getElementById("leftImg").addEventListener("click",()=>{
+                                    let imgIndex;
+                                    for (let i = 0; i < messageDetailList.length; i++) {
+                                        if (messageDetailList[i][0] === messageItem[2].id) {
+                                            imgIndex = i;
+                                        }
+                                    }
+                                    imgIndex++;
+                                    while(imgIndex<messageDetailList.length&&!messageDetailList[imgIndex][2].image){
+                                        imgIndex++;
+                                    }
+                                    if(imgIndex !== -1){
+                                        document.getElementById("bigImg").setAttribute("src",messageDetailList[imgIndex][2].image);
+                                    }
+                                })
+                                document.getElementById("rightImg").addEventListener("click",()=>{
+                                    let imgIndex;
+                                    for (let i = 0; i < messageDetailList.length; i++) {
+                                        if (messageDetailList[i][0] === messageItem[2].id) {
+                                            imgIndex = i;
+                                        }
+                                    }
+                                    imgIndex--;
+                                    while(imgIndex>=0&&!messageDetailList[imgIndex][2].image){
+                                        imgIndex--;
+                                    }
+                                    if(imgIndex !== messageDetailList.length){
+                                        document.getElementById("bigImg").setAttribute("src",messageDetailList[imgIndex][2].image);
+                                    }
+                                })
+                            })
+                        }
+                        else{
+                            let contentText = document.createElement("p");
+                            contentText.innerText = messageItem[2].message;
+                            messageContent.appendChild(contentText);
+                        }
                         item.appendChild(messageHeader);
                         item.appendChild(messageContent);
+
+                        let deleteButton;
+                        if(messageItem[2].sender===parseInt(localStorage.getItem("userId"))){
+                            deleteButton = document.createElement("button");
+                            deleteButton.type = "button";
+                            deleteButton.id=`${messageItem[2].id}Delete`;
+                            deleteButton.className = "roundedButton";
+                            deleteButton.textContent = "Delete";
+                            deleteButton.style.fontSize = "1em";
+                            deleteButton.style.width = "100px";
+                            let br1 = document.createElement("br");
+                            let br2 = document.createElement("br");
+                            item.appendChild(br1);
+                            item.appendChild(br2);
+                            item.appendChild(deleteButton);
+                            deleteButton.addEventListener("click",()=>{
+                                apiCallDelete(`message/${messageItem[3]}/${messageItem[2].id}`,localStorage.getItem("token"))
+                                    .then((data)=>{
+                                        messageIndex = 0;
+                                        displayMessageList(messageItem[2].id);
+                                    })
+                                    .catch((error)=>{
+                                        return;
+                                    })
+                            })
+                        }
+
                         messageList.insertBefore(item,messageList.firstChild);
                         avatar.addEventListener("click",()=>displayProfile(messageItem[2].sender));
                         ++messageIndex;
-                        document.getElementById("messageArea").scrollTop = document.getElementById("messageUl").scrollHeight;
-                        if(messageList.firstChild){
-                            document.querySelector(".defaultPage").style.display = "none";
-                            document.querySelector(".messageUl").style.display = "block";
-                        }
                     })
+                    if(messageList.firstChild){
+                        document.querySelector(".defaultPage").style.display = "none";
+                        document.querySelector(".messageUl").style.display = "block";
+                        if(!flag){
+                            document.getElementById("messageArea").scrollTop = document.getElementById("messageUl").scrollHeight;
+                        }
+                    }
+                    else{
+                        document.querySelector(".messageUl").style.display = "none";
+                        document.querySelector(".defaultPage").style.display = "flex";
+                    }
                 })
         })
         .catch((error)=>{
@@ -349,12 +449,12 @@ function displayCreatePage(){
     document.getElementById("channelForm").addEventListener('submit',(event)=>{
         event.preventDefault();
         let name = document.getElementById("creatingChannelName").value;
-        let isPivate = true;
+        let isPrivate = true;
         let description = document.getElementById("channelDescription").value;
         let token = localStorage.getItem("token");
         if(!description) description = "No description";
-        if(document.getElementById("channelType").value==="public") isPivate=false;
-        apiCallPost("channel",{name,isPivate,description},token)
+        if(document.getElementById("channelType").value==="public") isPrivate=false;
+        apiCallPost("channel",{name,"private":isPrivate,description},token)
             .then((data)=>{
                 getChannelList();
             })
@@ -480,16 +580,40 @@ function getBottomSidebar(){
 
 function sendMessage(channelId){
     let image = "";
-    let message = document.getElementById("inputMessage").value;
-    if(!message || !message.trim()) return;
+    let inputMessage = document.getElementById("inputMessage").value;
+    let fileList = document.getElementById("imgUpload").files;
+    if(fileList.length){
+        const file = fileList[0];
+        document.getElementById("imgUpload").value = '';
+        let file2Data = fileToDataUrl(file);
+        file2Data.then(image => {
+            let message = "";
+            apiCallPost(`message/${channelId}`,{message,image},localStorage.getItem("token"))
+                .then(()=>{
+                    messageIndex = 0;
+                    displayMessageList(channelId);
+                })
+                .catch(()=>{
+                    return;
+                })
+        })
+        .catch((error)=>{
+            return;
+        });
+    };
+    if(!inputMessage || !inputMessage.trim()){
+        return;
+    }
     document.getElementById("inputMessage").value = "";
+    let message = inputMessage;
     apiCallPost(`message/${channelId}`,{message,image},localStorage.getItem("token"))
         .then(()=>{
+            messageIndex = 0;
             displayMessageList(channelId);
         })
         .catch(()=>{
             return;
-        })
+        });
 }
 
 function infiniteScroll(event,containerId,listId){
@@ -662,6 +786,30 @@ function apiCallPut(path, body, token){
             method: 'PUT',
             headers: headers,
             body: JSON.stringify(body)
+        })
+        .then((response) => response.json())
+        .then((data) => {
+        if (data.error) {
+          reject(data.error);
+        } else {
+          resolve(data);
+        }
+        })
+        .catch((error) => {
+            reject(error);
+        });
+    });
+};
+
+function apiCallDelete(path, token){
+    let headers = {'accept': 'application/json','Content-type': 'application/json',};
+    if(token){
+        headers = {'accept': 'application/json','Content-type': 'application/json','Authorization': `Bearer ${token}`};
+    }
+    return new Promise((resolve,reject) =>{
+        fetch(`http://localhost:5005/` + path, {
+            method: 'Delete',
+            headers: headers
         })
         .then((response) => response.json())
         .then((data) => {
