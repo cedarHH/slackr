@@ -277,26 +277,39 @@ function displayMessageList(channelId){
     let messageIndex = 0;
     apiCallGet(`message/${channelId}`,localStorage.getItem("token"),`start=${messageIndex}`)
         .then((data)=>{
+            let promises = [];
+            let messageDetailList = [];
             data.messages.forEach(element=>{
-                apiCallGet(`user/${element.sender}`,localStorage.getItem("token"),"")
-                    .then((senderData)=>{
+                let get = apiCallGet(`user/${element.sender}`,localStorage.getItem("token"),"");
+                promises.push(get);
+                get.then((senderData)=>{
+                    messageDetailList.push([element.id,senderData,element])
+                })
+                .catch((error)=>{
+                    return;
+                })
+            })
+            Promise.all(promises)
+                .then(()=>{
+                    messageDetailList.sort((a,b)=>b[0]-a[0]);
+                    messageDetailList.forEach((messageItem)=>{
                         let item = document.createElement("li");
                         item.className = "messageInstance";
-                        item.id = `${element.id}m`;
+                        item.id = `${messageItem[2].id}m`;
         
                         let messageHeader = document.createElement("div");
                         messageHeader.className = "messageHeader";
                         let avatar = document.createElement("img");
                         avatar.setAttribute("alt", "avatar");
-                        avatar.setAttribute("id", `${element.sender}s`);
+                        avatar.setAttribute("id", `${messageItem[2].sender}s`);
                         avatar.setAttribute("src", "./img/avatar.png");
-                        if(senderData.image) avatar.setAttribute("src",senderData.image);
+                        if(messageItem[1].image) avatar.setAttribute("src",messageItem[1].image);
                         avatar.setAttribute("width", "35px");
                         avatar.setAttribute("height", "35px");
                         let headerName = document.createElement("p");
-                        headerName.innerText = senderData.name;
+                        headerName.innerText = messageItem[1].name;
                         let headerTime = document.createElement("p");
-                        let sentTime = new Date(element.sentAt);
+                        let sentTime = new Date(messageItem[2].sentAt);
                         headerTime.innerText = `${sentTime.toLocaleDateString()} ${sentTime.toLocaleTimeString()}`;
                         messageHeader.appendChild(avatar);
                         messageHeader.appendChild(headerName);
@@ -304,15 +317,15 @@ function displayMessageList(channelId){
                   
                         let messageContent = document.createElement("div");
                         messageContent.className = "messageContent";
-                        messageContent.id = `${element.id}message`;
+                        messageContent.id = `${messageItem[2].id}message`;
                         let contentText = document.createElement("p");
-                        contentText.innerText = element.message;
+                        contentText.innerText = messageItem[2].message;
                         messageContent.appendChild(contentText);
                     
                         item.appendChild(messageHeader);
                         item.appendChild(messageContent);
                         messageList.insertBefore(item,messageList.firstChild);
-                        avatar.addEventListener("click",()=>displayProfile(element.sender));
+                        avatar.addEventListener("click",()=>displayProfile(messageItem[2].sender));
                         ++messageIndex;
                         document.getElementById("messageArea").scrollTop = document.getElementById("messageUl").scrollHeight;
                         if(messageList.firstChild){
@@ -320,10 +333,7 @@ function displayMessageList(channelId){
                             document.querySelector(".messageUl").style.display = "block";
                         }
                     })
-                    .catch((error)=>{
-                        return;
-                    })
-            })
+                })
         })
         .catch((error)=>{
             return 0;
@@ -391,28 +401,65 @@ function displayEditPage(channelId,name,description){
 function displayInvitePage(channelId,name){
         document.querySelector(".inviteChannelPage").style.display="block";
         document.getElementById("inviteChannelName").value = name;
-        apiCallGet(`user`,localStorage.getItem("token"),"")
-            .then((data)=>{
-                const userList = document.getElementById("UserList");
-                data.users.forEach(item => {
-                    apiCallGet(`user`,localStorage.getItem("token"),`${data.id}`)
-                    .then((data)=>{
-                        const li = document.createElement("li");
-                        const checkbox = document.createElement("input");
-                        checkbox.type = "checkbox";
-                        checkbox.id = item.id;
-                        const label = document.createElement("label");
-                        label.textContent = data.name; 
-                        li.appendChild(checkbox);
-                        li.appendChild(label);
-                        userList.appendChild(li);
-                    })
-                    
-                });
+        document.getElementById("inviteButton").addEventListener("click",()=>{
+            let userList = document.getElementById("UserList");
+            let checkboxes = userList.querySelectorAll("input[type=checkbox]");
+            let selectedUser = [];
+            checkboxes.forEach(checkbox=>{
+                if(checkbox.checked) selectedUser.push(checkbox.id);
             })
-            document.getElementById("closeInviting").addEventListener('click',()=>{
+            selectedUser.forEach((userId)=>{
+                userId = parseInt(userId.slice(0,-1));
+                apiCallPost(`channel/${channelId}/invite`,{userId},localStorage.getItem("token"))
+                    .then(()=>{
+                        return;
+                    })
+                    .catch(()=>{
+                        return;
+                    })
+            })
+        });
+        document.getElementById("closeInviting").addEventListener('click',()=>{
             document.querySelector(".inviteChannelPage").style.display="none";
         });
+        apiCallGet(`user`,localStorage.getItem("token"),"")
+            .then((data)=>{
+                let promises = [];
+                let userList = document.getElementById("UserList");
+                while(userList.firstChild){
+                    userList.removeChild(userList.firstChild);
+                }
+                let userNameList = [];
+                data.users.forEach(item => {
+                    let get = apiCallGet(`user/${item.id}`,localStorage.getItem("token"),`${data.id}`);
+                    promises.push(get);
+                    get.then((userDetail)=>{
+                        userNameList.push([userDetail.name,item.id])
+                    })
+                    .catch(()=>{
+                        return;
+                    })
+                });
+                Promise.all(promises)
+                    .then(()=>{
+                        userNameList.sort((a,b)=>a[0].toLowerCase().localeCompare(b[0].toLowerCase()));
+                        userNameList.forEach((item)=>{
+                            let li = document.createElement("li");
+                            let checkbox = document.createElement("input");
+                            checkbox.type = "checkbox";
+                            checkbox.id = `${item[1]}c`;
+                            let label = document.createElement("label");
+                            label.textContent = item[0]; 
+                            li.appendChild(checkbox);
+                            li.appendChild(label);
+                            userList.appendChild(li);
+                        })
+                    });
+                }
+            )
+            .catch((error)=>{
+                return;
+            })
     }
 
 function getBottomSidebar(){
@@ -468,6 +515,8 @@ function logOut(){
     document.querySelector(".footer").style.display="flex";
     document.querySelector(".Homepage").style.display="none";
     document.querySelector("body").style.backgroundColor="#fafafa";
+    document.querySelector(".messageUl").style.display = "none";
+    document.querySelector(".defaultPage").style.display = "flex";
 }
 
 function displayProfile(userId){
