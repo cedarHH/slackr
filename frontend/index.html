@@ -69,9 +69,11 @@
                     </ul>
                 </div>
                 <div class="ChannelBottomSideBar">
-                    <button type="button" id = "logOutButton" class="imgButtonX">
-                        <img alt="Log out" src="./img/logout.png" width="35px">
-                    </button>
+                    <span><img alt="avatar" id = "userAvatar" src="./img/avatar.png" width="35px"></span>
+                    <span id = "userName" class="userNameText">User Name</span>
+                    <span><button type="button" id = "logOutButton" class="imgButtonX">
+                        <span><img alt="Log out" src="./img/logout.png" width="35px"></span>
+                    </button></span>
                 </div>
             </div>
 
@@ -79,7 +81,7 @@
 
             </div>
 
-            <div class="formpage">
+            <div class="createChannelPage">
                 <div class="popupWindow">
                     <form id="channelForm">
                         <label for="channelName"><b>Channel name</b></label>
@@ -101,6 +103,56 @@
                     </form>
                 </div>
             </div>
+
+            <div class="editChannelPage">
+                <div class="popupWindow">
+                    <form id="editChannelForm">
+                        <label for="channelName"><b>Channel name</b></label>
+                        <button type="button" id="closeEditing" class="symbolButtonX">x</button>
+                        <br><br>
+                        <input type="text" id="editingChannelName" class="roundedInput" placeholder="channel name" required>
+                        <br><br>
+                        <label for="editChannelDescription"><b>Channel description</b></label>
+                        <br><br>
+                        <textarea type="text" id="editChannelDescription" class="roundedInput"></textarea>
+                        <br><br>
+                        <button type="submit" id="submitediting" class="roundedButton">Edit</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="profilePage">
+                <div class="popupWindow">
+                    <img alt="profileImg" id = "profileImg" src="./img/avatar.png" width="100px">
+                    <h2>Name</h2>
+                    <p id="profileName" class="pmarginY">name@email.com</p>
+                    <p class="pmarginY"><b>bio</b></p>
+                    <p id="profileBio" class="pmarginY">biobiobiobio</p>
+                </div>
+            </div>
+
+            <div class="editProfilePage">
+                <div class="popupWindow">
+                    <img alt="profileImg" id = "editProfileImg" src="./img/avatar.png" width="100px">
+                    <br>
+                    <button type="button" id="uploadAvatar" class="roundedButton">Upload</button>
+                    <br>
+                    <form id="profileForm">
+                        <input type="name" id="nameProfile" class="roundedInput" placeholder="name" required>
+                        <br><br>
+                        <input type="email" id="emailProfile" class="roundedInput" placeholder="name@work-email.com" required>
+                        <br><br>
+                        <input type="password" id="passwordProfile" class="roundedInput" placeholder="password"required>
+                        <br><br>
+                        <input type="password" id="confirm_passwordProfile" class="roundedInput" placeholder="confirm password"required>
+                        <br><br>
+                        <input type="text" id="bioProfile" class="roundedInput" placeholder="bio"required>
+                        <br><br>
+                        <button type="submit" id="submitProfile" class="roundedButton">Submit</button>
+                    </form>
+                </div>
+            </div>
+
         </div>
     </main>
     <footer class="footer">
