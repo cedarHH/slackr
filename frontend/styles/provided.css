@@ -18,6 +18,11 @@ ul{
     padding: 20px;
 }
 
+.pmarginY{
+    margin-block-start: 0.5em;
+    margin-block-end: 0.5em;
+}
+
 .banner {
     height: 7vh;
     display: flex;
@@ -36,7 +41,33 @@ ul{
     background-color: rgba(0, 0, 0, 0.7);
 }
 
-.formpage{
+.createChannelPage{
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.editChannelPage{
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.profilePage{
+    display: none;
+}
+
+.editProfilePage{
     display: none;
     position: fixed;
     width: 100%;
@@ -90,11 +121,13 @@ ul{
 
 .ChannelList{
     width: 30%;
+    max-width: 275px;
     background-color: #f2f3f5;
 }
 
 .ContentArea{
-    width: 70%;
+    flex-grow: 1;
+    min-width: 70%;
     background-color: #ffffff;
     border-left: 4px solid #ccc;
     overflow-y: scroll;
@@ -154,13 +187,19 @@ ul{
 
 .ChannelBottomSideBar {
     display: flex;
+    justify-content: space-between;
     align-items: center; 
     height: 6% ;
+    padding: 0 5%;
     overflow: hidden;
 }
 
 .channelHeaderText{
     font-size: 1.5em;
+}
+
+.userNameText{
+    font-size: 1.2em;
 }
 
 .ChannelUl {
@@ -193,7 +232,6 @@ ul{
     font-size: 2em;
     font-weight: 700;
     border: 0;
-
 }
 
 .symbolButtonX {
